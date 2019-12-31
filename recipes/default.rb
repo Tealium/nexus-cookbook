@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 #
 # Cookbook Name:: nexus
 # Recipe:: default
@@ -19,10 +21,19 @@
 #
 
 if node[:nexus][:use_chef_vault]
-  chef_gem "chef-vault"
-  require 'chef-vault'
+  chef_gem 'chef-vault' do
+    action :purge
+    compile_time true
+    version '4.0.1'
+  end
+
+  chef_gem whitelist_gem do
+    action :upgrade
+    compile_time true
+    version '3.4.3'
+  end
 end
 
-include_recipe "nexus::cli"
-include_recipe "nexus::app"
-include_recipe "nexus::app_server_proxy"
+include_recipe 'nexus::cli'
+include_recipe 'nexus::app'
+include_recipe 'nexus::app_server_proxy'
